@@ -7,7 +7,25 @@ const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 const port = 3002;
 
-// Regular HTTP endpoint for compatibility
+// ALB Health Check endpoint
+app.get('/alb-health', (req, res) => {
+  // Check if WebSocket server is running
+  if (wss.clients.size >= 0) {
+    res.status(200).json({
+      status: 'healthy',
+      connections: wss.clients.size,
+      timestamp: new Date().toISOString()
+    });
+  } else {
+    res.status(503).json({
+      status: 'unhealthy',
+      error: 'WebSocket server not responding',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// WebSocket healthcheck endpoint
 app.get('/healthcheck', (req, res) => {
   res.json({ status: 'healthy' });
 });
