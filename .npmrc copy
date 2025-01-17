@@ -1,0 +1,3 @@
+# .npmrc
+node-gyp-force-rebuild=true
+build-from-source=true

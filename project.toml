@@ -1,0 +1,24 @@
+[[build.env]]
+name = "NODE_ENV"
+value = "production"
+
+[[build.env]]
+name = "NPM_CONFIG_BUILD_FROM_SOURCE"
+value = "true"
+
+[[build.buildpacks]]
+uri = "paketo-buildpacks/nodejs"
+
+[build.args]
+BP_NODE_VERSION = "20"
+
+[[build.env]]
+name = "NODE_ENV"
+value = "production"
+
+[[build.env]]
+name = "NPM_CONFIG_BUILD_FROM_SOURCE"
+value = "true"
+
+[[build.buildpacks]]
+uri = "paketo-buildpacks/nodejs"
