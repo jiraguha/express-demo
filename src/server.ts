@@ -7,9 +7,27 @@ import { Fruit } from './models/fruit';
 const app = express();
 app.use(express.json());
 
-// MongoDB connection
+// MongoDB connection and collection initialization
 mongoose.connect('mongodb://localhost:27017/fruits-db')
-  .then(() => console.log('Connected to MongoDB'))
+  .then(async () => {
+    console.log('Connected to MongoDB');
+    // Get the database instance
+    const db = mongoose.connection.db;
+    
+    // Check if collection exists
+    const collections = await db.listCollections({ name: 'fruits' }).toArray();
+    if (collections.length === 0) {
+      // Create the collection if it doesn't exist
+      await db.createCollection('fruits');
+      console.log('Fruits collection created');
+      
+      // Create index on name field
+      await db.collection('fruits').createIndex({ name: 1 }, { unique: true });
+      console.log('Index created on name field');
+    } else {
+      console.log('Fruits collection already exists');
+    }
+  })
   .catch(err => console.error('MongoDB connection error:', err));
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
