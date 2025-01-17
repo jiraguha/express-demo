@@ -15,14 +15,14 @@ mongoose.connect('mongodb://localhost:27017/fruits-db')
     const db = mongoose.connection.db;
     
     // Check if collection exists
-    const collections = await db.listCollections({ name: 'fruits' }).toArray();
-    if (collections.length === 0) {
+    const collections = await db?.listCollections({ name: 'fruits' }).toArray();
+    if (collections?.length === 0) {
       // Create the collection if it doesn't exist
-      await db.createCollection('fruits');
+      await db?.collection('fruits');
       console.log('Fruits collection created');
       
       // Create index on name field
-      await db.collection('fruits').createIndex({ name: 1 }, { unique: true });
+      await db?.collection('fruits').createIndex({ name: 1 }, { unique: true });
       console.log('Index created on name field');
     } else {
       console.log('Fruits collection already exists');
