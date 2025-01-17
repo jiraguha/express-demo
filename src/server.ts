@@ -8,7 +8,7 @@ const wss = new WebSocketServer({ server });
 const port = 3002;
 
 // ALB Health Check endpoint
-app.get('/alb-health', (req, res) => {
+app.get('/ws-health', (req, res) => {
   // Check if WebSocket server is running
   if (wss.clients.size >= 0) {
     res.status(200).json({
