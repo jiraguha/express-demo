@@ -15,28 +15,52 @@ const packageJson = JSON.parse(
 );
 const dbName = packageJson.name.replace(/-/g, '_');
 
-// MongoDB connection and collection initialization
-mongoose.connect(`mongodb://localhost:27017/${dbName}`)
-  .then(async () => {
-    console.log('Connected to MongoDB');
-    // Get the database instance
-    const db = mongoose.connection.db;
-    
-    // Check if collection exists
-    const collections = await db?.listCollections({ name: 'fruits' }).toArray();
-    if (collections?.length === 0) {
-      // Create the collection if it doesn't exist
-      await db?.collection('fruits');
-      console.log('Fruits collection created');
+// MongoDB connection configuration
+const connectWithRetry = async () => {
+  const maxRetries = 5;
+  const retryInterval = 5000; // 5 seconds
+  let currentRetry = 0;
+
+  while (currentRetry < maxRetries) {
+    try {
+      await mongoose.connect(`mongodb://localhost:27017/${dbName}`);
+      console.log('Connected to MongoDB');
       
-      // Create index on name field
-      await db?.collection('fruits').createIndex({ name: 1 }, { unique: true });
-      console.log('Index created on name field');
-    } else {
-      console.log('Fruits collection already exists');
+      // Get the database instance
+      const db = mongoose.connection.db;
+      
+      // Check if collection exists
+      const collections = await db?.listCollections({ name: 'fruits' }).toArray();
+      if (collections?.length === 0) {
+        // Create the collection if it doesn't exist
+        await db?.collection('fruits');
+        console.log('Fruits collection created');
+        
+        // Create index on name field
+        await db?.collection('fruits').createIndex({ name: 1 }, { unique: true });
+        console.log('Index created on name field');
+      } else {
+        console.log('Fruits collection already exists');
+      }
+      
+      break; // Exit the loop if connection is successful
+    } catch (err) {
+      currentRetry++;
+      console.error(`MongoDB connection attempt ${currentRetry}/${maxRetries} failed:`, err);
+      
+      if (currentRetry === maxRetries) {
+        console.error('Max retries reached. Could not connect to MongoDB');
+        process.exit(1); // Exit the process if we can't connect after max retries
+      }
+      
+      console.log(`Retrying in ${retryInterval/1000} seconds...`);
+      await new Promise(resolve => setTimeout(resolve, retryInterval));
     }
-  })
-  .catch(err => console.error('MongoDB connection error:', err));
+  }
+};
+
+// Initialize MongoDB connection
+connectWithRetry();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 const port = 3002;
