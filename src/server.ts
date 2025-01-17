@@ -46,6 +46,10 @@ wss.on('connection', (ws: WebSocket) => {
   });
 });
 
-server.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+if (require.main === module) {
+  server.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  });
+}
+
+export { app, server, wss };
