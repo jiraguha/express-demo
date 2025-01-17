@@ -23,7 +23,7 @@ const connectWithRetry = async () => {
 
   while (currentRetry < maxRetries) {
     try {
-      await mongoose.connect(`mongodb://localhost:27017/${dbName}`);
+      await mongoose.connect(`mongodb://host.docker.internal:27017/${dbName}`);
       console.log('Connected to MongoDB');
       
       // Get the database instance

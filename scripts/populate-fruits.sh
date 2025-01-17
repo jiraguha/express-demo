@@ -10,7 +10,7 @@ declare -a fruits=(
 )
 
 # URL of the API
-API_URL="http://localhost:3002/fruits"
+API_URL="http://host.docker.internal:3002/fruits"
 
 # Loop through the fruits array and send POST requests
 for fruit in "${fruits[@]}"
