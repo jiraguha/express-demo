@@ -44,7 +44,7 @@ app.post('/fruits', async (req, res) => {
     const fruit = new Fruit(req.body);
     await fruit.save();
     res.status(201).json(fruit);
-  } catch (error) {
+   } catch (error: any) {
     res.status(400).json({ error: error.message });
   }
 });
@@ -53,7 +53,7 @@ app.get('/fruits', async (req, res) => {
   try {
     const fruits = await Fruit.find();
     res.json(fruits);
-  } catch (error) {
+   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -63,7 +63,7 @@ app.get('/fruits/:id', async (req, res) => {
     const fruit = await Fruit.findById(req.params.id);
     if (!fruit) return res.status(404).json({ error: 'Fruit not found' });
     res.json(fruit);
-  } catch (error) {
+   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -73,7 +73,7 @@ app.put('/fruits/:id', async (req, res) => {
     const fruit = await Fruit.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!fruit) return res.status(404).json({ error: 'Fruit not found' });
     res.json(fruit);
-  } catch (error) {
+   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -83,7 +83,7 @@ app.delete('/fruits/:id', async (req, res) => {
     const fruit = await Fruit.findByIdAndDelete(req.params.id);
     if (!fruit) return res.status(404).json({ error: 'Fruit not found' });
     res.json({ message: 'Fruit deleted successfully' });
-  } catch (error) {
+   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
