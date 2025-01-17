@@ -3,12 +3,20 @@ import { WebSocket, WebSocketServer } from 'ws';
 import http from 'http';
 import mongoose from 'mongoose';
 import { Fruit } from './models/fruit';
+import path from 'path';
+import fs from 'fs';
 
 const app = express();
 app.use(express.json());
 
+// Read package.json to get project name
+const packageJson = JSON.parse(
+  fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8')
+);
+const dbName = packageJson.name.replace(/-/g, '_');
+
 // MongoDB connection and collection initialization
-mongoose.connect('mongodb://localhost:27017/fruits-db')
+mongoose.connect(`mongodb://localhost:27017/${dbName}`)
   .then(async () => {
     console.log('Connected to MongoDB');
     // Get the database instance
