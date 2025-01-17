@@ -1,3 +1,4 @@
 .a*
 .env
 node_modules/
+dev.sh
