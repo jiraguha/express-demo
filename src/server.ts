@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import { Fruit } from './models/fruit';
 import path from 'path';
 import fs from 'fs';
+import { config } from './config';
 
 const app = express();
 app.use(express.json());
@@ -23,7 +24,7 @@ const connectWithRetry = async () => {
 
   while (currentRetry < maxRetries) {
     try {
-      await mongoose.connect(`mongodb://host.docker.internal:27017/${dbName}`);
+      await mongoose.connect(`mongodb://${config.mongodb.host}:${config.mongodb.port}/${dbName}`);
       console.log('Connected to MongoDB');
       
       // Get the database instance
